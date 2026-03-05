@@ -4,7 +4,7 @@
 // @version      14.1
 // @description  V14.0基础增加：若填表卡死超过10次循环（约15秒），自动刷新页面重试
 // @author       You
-// @match        *://*/*
+// @match        https://*.sheerid.com/*
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_deleteValue
@@ -13,6 +13,8 @@
 (function() {
     'use strict';
 
+    const isSheerIdHost = window.location.hostname === 'services.sheerid.com' || window.location.hostname.endsWith('.sheerid.com');
+    if (!isSheerIdHost) return;
     // --- 核心配置 ---
     const FIELD_MAP = {
         status: '#sid-military-status',
@@ -98,7 +100,7 @@
                 </div>
             </div>
         `;
-        document.body.appendChild(div);
+        (document.body || document.documentElement).appendChild(div);
         return div;
     }
 
