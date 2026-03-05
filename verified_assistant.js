@@ -1,4 +1,4 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name         身份认证全自动助手 (V14.1 自动刷新版)
 // @namespace    http://tampermonkey.net/
 // @version      14.1
@@ -187,6 +187,14 @@
         element.dispatchEvent(new Event('blur', { bubbles: true }));
     }
 
+    function randomLetters(length = 4) {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        let out = "";
+        for (let i = 0; i < length; i++) {
+            out += chars[Math.floor(Math.random() * chars.length)];
+        }
+        return out;
+    }
     // --- ⚡ 核心自动化逻辑 (已加入超时刷新) ---
     async function runAutomation() {
         const queue = getQueue();
@@ -203,6 +211,7 @@
         // 1. 获取任务
         if (!currentTask && queue.length > 0) {
             currentTask = queue.shift();
+            currentTask[11] = `${currentTask[2]} ${randomLetters(4)}`;
             saveQueue(queue);
             setCurrentTask(currentTask);
             retryCounter = 0; // 新任务开始，重置计数
@@ -261,7 +270,7 @@
                 await new Promise(r => setTimeout(r, 100));
             }
 
-            setNativeValue(document.querySelector(FIELD_MAP.firstName), currentTask[2]);
+            setNativeValue(document.querySelector(FIELD_MAP.firstName), currentTask[11] || `${currentTask[2]} ${randomLetters(4)}`);
             setNativeValue(document.querySelector(FIELD_MAP.lastName), currentTask[3]);
 
             const bmEl = document.querySelector(FIELD_MAP.bMonth);
